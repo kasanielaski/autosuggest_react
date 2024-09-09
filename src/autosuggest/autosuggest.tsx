@@ -37,15 +37,21 @@ const Autosuggest = ({
     setText(event.target.value);
   };
 
+  const handleElement = (event: any) => {
+    setText(event.target.outerText);
+  }
+
   return (
     <Wrapper>
       <Title>{title}</Title>
       <Input placeholder={placeholder} value={text} onChange={handleChange} />
       {suggests.length > 0 && (
         <SuggestContainer>
-          {suggests.map((el, i) => (
-            <SuggestList key={i}>{el}</SuggestList>
-          ))}
+          <SuggestList>
+            {suggests.map((el, i) => (
+              <SuggestItem key={i} onClick={handleElement}>{el}</SuggestItem>
+            ))}
+          </SuggestList>
         </SuggestContainer>
       )}
     </Wrapper>
