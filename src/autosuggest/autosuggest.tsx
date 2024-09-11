@@ -1,21 +1,16 @@
 import { ChangeEvent, useState } from "react";
 import { useDebounce } from "react-use";
 
-import type { IAutosuggestProps } from "./types.d.ts";
-import { suggestList } from "../assets/suggest-list.ts";
+import type { IAutosuggestProps } from "./types";
+import { suggestList } from "../assets/suggest-list";
 
-import {
-  Input,
-  Title,
-  Wrapper,
-  SuggestContainer,
-  SuggestList,
-  SuggestItem,
-} from "./styled.ts";
+import { Input, Title, Wrapper } from "./styled";
+import { AutosuggestContainer } from "./autosuggest-container";
 
 const Autosuggest = ({
   placeholder = "placeholder",
   title = "default title",
+  autocompleteList = suggestList,
 }: IAutosuggestProps) => {
   const [text, setText] = useState<string>("");
   const [suggests, setSuggests] = useState<string[]>(() => []);
@@ -23,7 +18,7 @@ const Autosuggest = ({
   useDebounce(
     () => {
       if (text.length > 0) {
-        const suggests = suggestList.filter((el) => el.match(text));
+        const suggests = autocompleteList.filter((el) => el.match(text));
         setSuggests(suggests);
       } else {
         setSuggests([]);
@@ -37,23 +32,11 @@ const Autosuggest = ({
     setText(event.target.value);
   };
 
-  const handleElement = (event: any) => {
-    setText(event.target.outerText);
-  }
-
   return (
     <Wrapper>
       <Title>{title}</Title>
       <Input placeholder={placeholder} value={text} onChange={handleChange} />
-      {suggests.length > 0 && (
-        <SuggestContainer>
-          <SuggestList>
-            {suggests.map((el, i) => (
-              <SuggestItem key={i} onClick={handleElement}>{el}</SuggestItem>
-            ))}
-          </SuggestList>
-        </SuggestContainer>
-      )}
+      {suggests.length > 0 && <AutosuggestContainer suggests={suggests} setText={setText} />}
     </Wrapper>
   );
 };
